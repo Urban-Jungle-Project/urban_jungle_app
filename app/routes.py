@@ -6,25 +6,24 @@ from app.models import User
 from flask_login import logout_user
 from werkzeug.urls import url_parse
 from app import db
-from app.forms import RegistrationForm, EditProfileForm
+from app.forms import RegistrationForm, EditProfileForm, EditPlantForm
+from app.models import Plant
 from datetime import datetime
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template("index.html", title='Home Page', posts=posts)
+    plant_form = EditPlantForm()
+    if plant_form.validate_on_submit():
+        plant = Plant(plant_name=plant_form.plant_name.data, owner=current_user)
+        db.session.add(plant)
+        db.session.commit()
+        flash('New plant is registered!')
+        return redirect(url_for('index'))
+    plants = current_user.owned_plants().all()
+    return render_template("index.html", title='Home Page', form=plant_form, plants=plants)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -43,6 +42,7 @@ def login():
             next_page = url_for('index')
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
+
 
 @app.route('/logout')
 def logout():
@@ -86,7 +86,7 @@ def before_request():
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
@@ -98,3 +98,26 @@ def edit_profile():
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile',
                            form=form)
+
+
+@app.route('/plant/<plant_id>')
+@login_required
+def plant_page(plant_id):
+    plant = Plant.query.filter_by(id=plant_id).first_or_404()
+    return render_template('plant_details.html', plant=plant)
+
+
+@app.route('/plant/<plant_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_plant(plant_id):
+    form = EditPlantForm()
+    if form.validate_on_submit():
+        plant = Plant.query.filter_by(id=plant_id).first()
+        plant.plant_name = form.plant_name.data
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('edit_plant', plant_id=plant_id))
+    elif request.method == 'GET':
+        plant = Plant.query.filter_by(id=plant_id).first()
+        form.plant_name.data = plant.plant_name
+    return render_template('edit_plant.html', title='Edit Plant', form=form)

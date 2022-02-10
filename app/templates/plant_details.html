@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table>
+        <tr valign="top">
+            <td>
+                <h1>My plant: {{ plant.plant_name }}</h1>
+                 <p><a href="{{ url_for('edit_plant', plant_id=plant.id) }}">Edit plant details.</a></p>
+            </td>
+        </tr>
+    </table>
+    <hr>
+{% endblock %}

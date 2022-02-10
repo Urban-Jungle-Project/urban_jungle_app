@@ -28,6 +28,10 @@ class User(UserMixin, db.Model):
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, size)
 
+    def owned_plants(self):
+        plants = Plant.query.filter_by(user_id=self.id)
+        return plants.order_by(Plant.plant_name.desc())
+
 
 @login.user_loader
 def load_user(id):
@@ -36,7 +40,7 @@ def load_user(id):
 
 class Plant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    plant_name = db.Column(db.String(64), index=True)
+    plant_name = db.Column(db.String(64), index=True, unique=True)
     last_watering_timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 

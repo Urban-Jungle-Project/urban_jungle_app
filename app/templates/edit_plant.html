@@ -1,25 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Lets grow more plants!</h1>
+    <h1>Edit Plant</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
             {{ form.plant_name.label }}<br>
-            {{ form.plant_name(cols=32, rows=4) }}<br>
+            {{ form.plant_name(size=32) }}<br>
             {% for error in form.plant_name.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-    <h1>My owned plants:</h1>
-    {% for plant in plants %}
-    <p>
-    <a href="{{ url_for('plant_page', plant_id=plant.id) }}">
-                    {{ plant.plant_name }} </a>
-    </p>
-
-    {% endfor %}
-
 {% endblock %}

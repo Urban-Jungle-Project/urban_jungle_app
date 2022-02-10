@@ -1,19 +1,19 @@
 <html>
     <head>
         {% if title %}
-        <title>{{ title }} - microblog</title>
+        <title>{{ title }} - urbanjungle</title>
         {% else %}
-        <title>microblog</title>
+        <title>Urban Jungle</title>
         {% endif %}
     </head>
     <body>
         <div>
-           Microblog:
+           Urban Jungle:
            <a href="{{ url_for('index') }}">Home</a>
            {% if current_user.is_anonymous %}
            <a href="{{ url_for('login') }}">Login</a>
            {% else %}
-           <a href="{{ url_for('user', username=current_user.username) }}">Profile</a>
+           <a href="{{ url_for('user', username=current_user.username) }}">My Profile</a>
            <a href="{{ url_for('logout') }}">Logout</a>
            {% endif %}
         </div>
