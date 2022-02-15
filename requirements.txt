@@ -5,3 +5,4 @@ Flask-sqlalchemy
 Flask-migrate
 Flask-login
 Python-dotenv
+Flask-bootstrap

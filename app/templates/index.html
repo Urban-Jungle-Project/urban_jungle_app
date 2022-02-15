@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block app_content %}
     <h1>Lets grow more plants!</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
@@ -15,17 +15,21 @@
     </form>
     <h1>My owned plants:</h1>
     {% for plant in plants %}
-    <p>
-    - <a href=" {{ url_for('plant_page', plant_id=plant.id) }}">
-                    {{ plant.plant_name }} </a>
-    </p>
-
+        {% include '_plant.html' %}
     {% endfor %}
-    {% if prev_url %}
-    <a href="{{ prev_url }}">Newer plants</a>
-    {% endif %}
-    {% if next_url %}
-    <a href="{{ next_url }}">Older plants</a>
-    {% endif %}
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> Newer plants
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Older plants <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
 {% endblock %}
