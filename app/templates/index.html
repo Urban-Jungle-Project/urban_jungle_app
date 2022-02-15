@@ -16,10 +16,16 @@
     <h1>My owned plants:</h1>
     {% for plant in plants %}
     <p>
-    <a href="{{ url_for('plant_page', plant_id=plant.id) }}">
+    - <a href=" {{ url_for('plant_page', plant_id=plant.id) }}">
                     {{ plant.plant_name }} </a>
     </p>
 
     {% endfor %}
+    {% if prev_url %}
+    <a href="{{ prev_url }}">Newer plants</a>
+    {% endif %}
+    {% if next_url %}
+    <a href="{{ next_url }}">Older plants</a>
+    {% endif %}
 
 {% endblock %}

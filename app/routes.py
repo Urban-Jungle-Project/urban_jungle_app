@@ -22,8 +22,13 @@ def index():
         db.session.commit()
         flash('New plant is registered!')
         return redirect(url_for('index'))
-    plants = current_user.owned_plants().all()
-    return render_template("index.html", title='Home Page', form=plant_form, plants=plants)
+    page = request.args.get('page', 1, type=int)
+    plants = current_user.owned_plants().paginate(page, app.config['PLANTS_PER_PAGE'], False)
+    next_url = url_for('index', page=plants.next_num) if plants.has_next else None
+    prev_url = url_for('index', page=plants.prev_num) if plants.has_prev else None
+
+    return render_template("index.html", title='Home Page', form=plant_form, plants=plants.items, next_url=next_url,
+                           prev_url=prev_url)
 
 
 @app.route('/login', methods=['GET', 'POST'])
