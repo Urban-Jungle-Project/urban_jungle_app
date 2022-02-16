@@ -46,3 +46,8 @@ class Plant(db.Model):
 
     def __repr__(self):
         return '<Plant {}>'.format(self.plant_name)
+
+    def picture(self, size):
+        digest = md5(self.plant_name.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)

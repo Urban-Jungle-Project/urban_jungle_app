@@ -1,12 +1,15 @@
 <table class="table table-hover">
     <tr>
+        <td width="70px">
+            <img src="{{ plant.picture(70) }}" />
+        </td>
         <td>
             <a href="{{ url_for('plant_page', plant_id=plant.id) }}">
                 {{ plant.plant_name }}
             </a>
             details:
             <br>
-            {{ plant.plant_name }}
+            Last watered {{ moment(plant.last_watering_timestamp).fromNow() }}:
         </td>
     </tr>
 </table>
