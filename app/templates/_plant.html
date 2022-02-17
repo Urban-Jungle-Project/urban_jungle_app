@@ -4,12 +4,12 @@
             <img src="{{ plant.picture(70) }}" />
         </td>
         <td>
-            <a href="{{ url_for('plant_page', plant_id=plant.id) }}">
+            <a href="{{ url_for('main.plant_page', plant_id=plant.id) }}">
                 {{ plant.plant_name }}
             </a>
             details:
             <br>
-            Last watered {{ moment(plant.last_watering_timestamp).fromNow() }}:
+            Last watered {{ moment(plant.last_watering_timestamp).fromNow() }}
         </td>
     </tr>
 </table>
