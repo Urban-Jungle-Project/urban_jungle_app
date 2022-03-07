@@ -7,3 +7,4 @@ Flask-login
 Python-dotenv
 Flask-bootstrap
 Flask-moment
+Flask-httpauth
