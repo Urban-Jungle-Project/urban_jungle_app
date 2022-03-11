@@ -102,13 +102,12 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
         return user
 
 
-
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
 
-class Plant(db.Model):
+class Plant(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     plant_name = db.Column(db.String(64), index=True)
     last_watering_timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -121,3 +120,21 @@ class Plant(db.Model):
         digest = md5(self.plant_name.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, size)
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'plant_name': self.plant_name,
+            'last_watering_timestamp': self.last_watering_timestamp,
+            'user_id': self.user_id,
+            '_links': {
+                'self': url_for('api.get_plant', id=self.id),
+                'picture': self.picture(128)
+            }
+        }
+        return data
+
+    def from_dict(self, data):
+        for field in ['plant_name', 'user_id']:
+            if field in data:
+                setattr(self, field, data[field])
